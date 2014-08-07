@@ -1,0 +1,50 @@
+{
+	"manifest_version": 2,
+	"name": "Right Click Cisco Dialer",
+	"description": "Right Click Cisco Dialer. Works with Cisco SPA phones.",
+	"version": "1",
+	"minimum_chrome_version": "18",
+	"author": "Josh Calder <josh@systemstateit.com.au>",
+	"default_locale": "en",
+	"icons": {
+	      "128": "img/ChromeExtension128.png",
+	      "16": "img/16.png",
+	      "19": "img/19.png",
+	      "48": "img/48.png"
+	},
+	"options_page": "/pages/cisco_dialer_config.htm",
+	"permissions": [
+		"tabs",
+		"storage",
+		"notifications",
+		"contextMenus",
+		
+		/* Currently it's not possible to use wildcards in optional permissions
+		 * thus we have to set this many permissions for the extension until
+		 * this issue is fixed.
+		 */
+		"*://*/CGI/Execute"
+	],
+	"optional_permissions": [
+		"*://*/CGI/Execute"
+	],
+	"content_scripts": [{
+		"matches": [
+			"http://*/",
+			"https://*/"
+		],
+		"js": [
+			"/scripts/cisco_dialer_sjcl.js",
+			"/scripts/cisco_dialer_content.js",
+			"/scripts/script.js"
+		],
+		"css": [
+			"/styles/cisco_dialer_content.css"
+		],
+		"run_at": "document_idle",
+		"all_frames": true
+	}],
+	"background": {
+		"page": "background.html"
+	}
+}
