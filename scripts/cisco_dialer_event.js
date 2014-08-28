@@ -15,8 +15,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 function ciscoShowMessage(message, placeholders) {
 	chrome.notifications.create('', {
 		type: 'basic',
@@ -48,17 +46,22 @@ function ciscoSendXmlRequest(uri, request, user, secret) {
 	xmlHttp.send(postParameters);
 } 
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	if (request.notification) {
-		ciscoShowMessage(request.notification);
-	}
+function callCiscoPhone(info,tab) {
 
-	if (request.sendxml) {
-		ciscoSendXmlRequest(
-			request.sendxml.uri,
-			request.sendxml.request,
-			request.sendxml.user,
-			request.sendxml.secret);
-	}
+	phoneNumber = info.selectionText.replace (/[()\s]/g, '');
+	console.log("Word " + info.selectionText + " was clicked.");
+	console.log (document.ciscoConfig.dialCommandXml);
+	console.log (document.ciscoConfig.destinationUri);
+	ciscoSendXmlRequest(
+			document.ciscoConfig.destinationUri,
+			document.ciscoConfig.dialCommandXml.replace(/{number}/, phoneNumber),
+			document.ciscoConfig.authUser,
+			document.ciscoConfig.authSecret);
+}
+
+chrome.contextMenus.create({
+    title: "Call: %s", 
+    contexts:["selection"], 
+    onclick: callCiscoPhone,
+
 });
-
